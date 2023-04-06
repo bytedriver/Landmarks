@@ -1,5 +1,5 @@
 //
-//  LandmarkList.swift
+//  FavoriteButton.swift
 //  Landmarks
 //
 //  88                                                     88              88                                     
@@ -19,28 +19,22 @@
 
 import SwiftUI
 
-struct LandmarkList: View {
+struct FavoriteButton: View {
+    @Binding var isSet: Bool
+    
     var body: some View {
-        NavigationView {
-            List(landmarks) { landmark in
-                NavigationLink {
-                    LandmarkDetail(landmark: landmark)
-                } label: {
-                    LandmarkRow(landmark: landmark)
-                }
-            }
-            .navigationTitle("Landmarks")
+        Button {
+            isSet.toggle()
+        } label: {
+            Label("Toggle Favorite", systemImage: isSet ? "star.fill" : "star")
+                .labelStyle(.iconOnly)
+                .foregroundColor(isSet ? .yellow : .gray)
         }
     }
 }
 
-struct LandmarkList_Previews: PreviewProvider {
+struct FavoriteButton_Previews: PreviewProvider {
     static var previews: some View {
-        ForEach(["iPhone SE (3rd generation)", "iPhone 12 Pro", "iPad Pro (11-inch) (4th generation)"], id: \.self) { deviceName in
-                    LandmarkList()
-                        .previewDevice(PreviewDevice(rawValue: deviceName))
-                        .previewDisplayName(deviceName)
-                }
+        FavoriteButton(isSet: .constant(true))
     }
-
 }

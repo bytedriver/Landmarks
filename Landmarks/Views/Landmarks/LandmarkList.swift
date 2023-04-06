@@ -1,5 +1,5 @@
 //
-//  LandmarkRow.swift
+//  LandmarkList.swift
 //  Landmarks
 //
 //  88                                                     88              88                                     
@@ -19,27 +19,40 @@
 
 import SwiftUI
 
-struct LandmarkRow: View {
-    var landmark: Landmark
+struct LandmarkList: View {
+    @EnvironmentObject var modelData: ModelData
+    @State private var showFavoritesOnly = false
+    
+    var filteredLandmarks: [Landmark] {
+        modelData.landmarks.filter { landmark in
+            (!showFavoritesOnly || landmark.isFavorite)
+        }
+    }
     
     var body: some View {
-        HStack {
-            landmark.image
-                .resizable()
-                .frame(width: 50, height: 50)
-            Text(landmark.name)
-            
-            Spacer()
+        NavigationView {
+            List {
+                Toggle(isOn: $showFavoritesOnly) {
+                    Text("Favorites only")
+                }
+                
+                ForEach(filteredLandmarks) { landmark in
+                    NavigationLink {
+                        LandmarkDetail(landmark: landmark)
+                    } label: {
+                        LandmarkRow(landmark: landmark)
+                    }
+                }
+                .navigationTitle("Landmarks")
+            }
         }
     }
 }
 
-struct LandmarkRow_Previews: PreviewProvider {
+struct LandmarkList_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            LandmarkRow(landmark: landmarks[0])
-            LandmarkRow(landmark: landmarks[1])
-        }
-        .previewLayout(.fixed(width: 300, height: 70))
+        LandmarkList()
+            .environmentObject(ModelData())
     }
+
 }

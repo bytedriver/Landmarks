@@ -1,5 +1,5 @@
 //
-//  ModelData.swift
+//  LandmarkRow.swift
 //  Landmarks
 //
 //  88                                                     88              88                                     
@@ -17,31 +17,36 @@
 //  Copyright © 2023 bytedriver. All rights reserved.
 //
 
-import Foundation
-import Combine
+import SwiftUI
 
-final class ModelData: ObservableObject {
-    @Published var landmarks: [Landmark] = load("landmarkData.json")
+struct LandmarkRow: View {
+    var landmark: Landmark
+    
+    var body: some View {
+        HStack {
+            landmark.image
+                .resizable()
+                .frame(width: 50, height: 50)
+            Text(landmark.name)
+            
+            Spacer()
+            
+            if landmark.isFavorite {
+                Image(systemName: "star.fill")
+                    .foregroundColor(.yellow)
+            }
+        }
+    }
 }
 
-func load<T: Decodable>(_ filename: String) -> T {
-    let data: Data
+struct LandmarkRow_Previews: PreviewProvider {
+    static var landmarks = ModelData().landmarks
     
-    guard let file = Bundle.main.url(forResource: filename, withExtension: nil)
-    else {
-        fatalError("Couldn't find \(filename) in main bundle.")
-    }
-    
-    do {
-        data = try Data(contentsOf: file)
-    } catch {
-        fatalError("Couldn't load \(filename) from main bundle:\n\(error)")
-    }
-    
-    do {
-        let decoder = JSONDecoder()
-        return try decoder.decode(T.self, from: data)
-    } catch {
-        fatalError("Couldn't parse \(filename) as \(T.self):\n\(error)")
+    static var previews: some View {
+        Group {
+            LandmarkRow(landmark: landmarks[0])
+            LandmarkRow(landmark: landmarks[1])
+        }
+        .previewLayout(.fixed(width: 300, height: 70))
     }
 }
