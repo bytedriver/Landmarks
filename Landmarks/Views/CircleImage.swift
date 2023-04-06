@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  CircleImage.swift
 //  Landmarks
 //
 //  88                                                     88              88
@@ -19,44 +19,21 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct CircleImage: View {
+    var image: Image
+    
     var body: some View {
-        VStack {
-            MapView()
-                .ignoresSafeArea(edges: .top)
-                .frame(height: 300)
-            
-            CircleImage()
-                .offset(y: -130)
-                .padding(.bottom, -130)
-            
-            VStack(alignment: .leading) {
-                Text("Turtle Rock")
-                    .font(.title)
-                
-                HStack {
-                    Text("Joshua Tree National Park")
-                    Spacer()
-                    Text("California")
-                }
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-
-                Divider()
-                
-                Text("About Turtle Rock")
-                    .font(.title2)
-                Text("Descriptive text goes here.")
+        image
+            .clipShape(Circle())
+            .overlay {
+                Circle().stroke(.white, lineWidth: 4)
             }
-            .padding()
-            
-            Spacer()
-        }
+            .shadow(radius: 7)
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct CircleImage_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        CircleImage(image: Image("turtlerock"))
     }
 }

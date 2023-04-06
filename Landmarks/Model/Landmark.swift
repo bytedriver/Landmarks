@@ -1,5 +1,5 @@
 //
-//  MapView.swift
+//  Landmark.swift
 //  Landmarks
 //
 //  88                                                     88              88
@@ -17,21 +17,32 @@
 //  Copyright © 2023 bytedriver. All rights reserved.
 //
 
+import Foundation
 import SwiftUI
-import MapKit
+import CoreLocation
 
-struct MapView: View {
-    @State private var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 34.011_286, longitude: -116.166_868),
-        span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
-    )
-    var body: some View {
-        Map(coordinateRegion: $region)
+struct Landmark: Hashable, Codable, Identifiable {
+    var id: Int
+    var name: String
+    var park: String
+    var state: String
+    var description: String
+    
+    private var imageName: String
+    var image: Image {
+        Image(imageName)
     }
-}
-
-struct MapView_Previews: PreviewProvider {
-    static var previews: some View {
-        MapView()
+    
+    private var coordinates: Coordinates
+    var locationCoordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(
+            latitude: coordinates.latitude,
+            longitude: coordinates.longitude
+        )
+    }
+    
+    struct Coordinates: Hashable, Codable {
+        var latitude: Double
+        var longitude: Double
     }
 }

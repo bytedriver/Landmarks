@@ -1,5 +1,5 @@
 //
-//  CircleImage.swift
+//  MapView.swift
 //  Landmarks
 //
 //  88                                                     88              88
@@ -18,20 +18,29 @@
 //
 
 import SwiftUI
+import MapKit
 
-struct CircleImage: View {
+struct MapView: View {
+    var coordinate: CLLocationCoordinate2D
+    @State private var region = MKCoordinateRegion()
+    
     var body: some View {
-        Image("turtlerock")
-            .clipShape(Circle())
-            .overlay {
-                Circle().stroke(.white, lineWidth: 4)
+        Map(coordinateRegion: $region)
+            .onAppear {
+                setRegion(coordinate)
             }
-            .shadow(radius: 7)
+    }
+    
+    private func setRegion(_ coordinate: CLLocationCoordinate2D) {
+        region = MKCoordinateRegion(
+            center: coordinate,
+            span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
+        )
     }
 }
 
-struct CircleImage_Previews: PreviewProvider {
+struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        CircleImage()
+        MapView(coordinate: CLLocationCoordinate2D(latitude: 34.011_286, longitude: -116.166_868))
     }
 }
