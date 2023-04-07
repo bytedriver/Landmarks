@@ -1,5 +1,5 @@
 //
-//  CategoryHome.swift
+//  ProfileEditor.swift
 //  Landmarks
 //
 //  88                                                     88              88                                     
@@ -19,45 +19,47 @@
 
 import SwiftUI
 
-struct CategoryHome: View {
-    @EnvironmentObject var modelData: ModelData
-    @State private var showingProfile = false
+struct ProfileEditor: View {
+    @Binding var profile: Profile
+    
+    var dateRange: ClosedRange<Date> {
+        let min = Calendar.current.date(byAdding: .year, value: -1, to: profile.goalDate)!
+        let max = Calendar.current.date(byAdding: .year, value: 1, to: profile.goalDate)!
+        return min ... max
+    }
     
     var body: some View {
-        NavigationView {
-            List {
-                modelData.features[0].image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 200)
-                    .clipped()
-                    .listRowInsets(EdgeInsets())
+        List {
+            HStack {
+                Text("Username").bold()
+                Divider()
+                TextField("Username", text: $profile.username)
+            }
+            
+            Toggle(isOn: $profile.prefersNotifications) {
+                Text("Enable Notifications").bold()
+            }
+            
+            VStack(alignment: .leading, spacing: 20) {
+                Text("Seasonal Photo").bold()
                 
-                ForEach(modelData.categories.keys.sorted(), id: \.self) { key in
-                    CategoryRow(categoryName: key, items: modelData.categories[key]!)
+                Picker("Seasonal Photo", selection: $profile.seasonalPhoto) {
+                    ForEach(Profile.Season.allCases) { season in
+                        Text(season.rawValue).tag(season)
+                    }
                 }
-                .listRowInsets(EdgeInsets())
+                .pickerStyle(.segmented)
             }
-            .listStyle(.inset)
-            .navigationTitle("Featured")
-            .toolbar {
-                Button {
-                    showingProfile.toggle()
-                } label: {
-                    Label("User Profile", systemImage: "person.crop.circle")
-                }
-            }
-            .sheet(isPresented: $showingProfile) {
-                ProfileHost()
-                    .environmentObject(modelData)
+            
+            DatePicker(selection: $profile.goalDate, in: dateRange, displayedComponents: .date) {
+                Text("Goal Date").bold()
             }
         }
     }
 }
 
-struct CategoryHome_Previews: PreviewProvider {
+struct ProfileEditor_Previews: PreviewProvider {
     static var previews: some View {
-        CategoryHome()
-            .environmentObject(ModelData())
+        ProfileEditor(profile: .constant(.default))
     }
 }

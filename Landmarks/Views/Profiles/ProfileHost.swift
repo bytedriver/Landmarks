@@ -1,5 +1,5 @@
 //
-//  CategoryHome.swift
+//  ProfileHost.swift
 //  Landmarks
 //
 //  88                                                     88              88                                     
@@ -19,45 +19,43 @@
 
 import SwiftUI
 
-struct CategoryHome: View {
+struct ProfileHost: View {
+    @Environment(\.editMode) var editMode
     @EnvironmentObject var modelData: ModelData
-    @State private var showingProfile = false
+    @State private var draftProfile = Profile.default
     
     var body: some View {
-        NavigationView {
-            List {
-                modelData.features[0].image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 200)
-                    .clipped()
-                    .listRowInsets(EdgeInsets())
-                
-                ForEach(modelData.categories.keys.sorted(), id: \.self) { key in
-                    CategoryRow(categoryName: key, items: modelData.categories[key]!)
+        VStack {
+            HStack {
+                if editMode?.wrappedValue == .active {
+                    Button("Cancel", role: .cancel) {
+                        draftProfile = modelData.profile
+                        editMode?.animation().wrappedValue = .inactive
+                    }
                 }
-                .listRowInsets(EdgeInsets())
+                Spacer()
+                EditButton()
             }
-            .listStyle(.inset)
-            .navigationTitle("Featured")
-            .toolbar {
-                Button {
-                    showingProfile.toggle()
-                } label: {
-                    Label("User Profile", systemImage: "person.crop.circle")
-                }
-            }
-            .sheet(isPresented: $showingProfile) {
-                ProfileHost()
-                    .environmentObject(modelData)
+            
+            if editMode?.wrappedValue == .inactive {
+                ProfileSummary(profile: modelData.profile)
+            } else {
+                ProfileEditor(profile: $draftProfile)
+                    .onAppear {
+                        draftProfile = modelData.profile
+                    }
+                    .onDisappear {
+                        modelData.profile = draftProfile
+                    }
             }
         }
+        .padding()
     }
 }
 
-struct CategoryHome_Previews: PreviewProvider {
+struct ProfileHost_Previews: PreviewProvider {
     static var previews: some View {
-        CategoryHome()
+        ProfileHost()
             .environmentObject(ModelData())
     }
 }
