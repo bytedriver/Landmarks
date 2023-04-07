@@ -1,5 +1,5 @@
 //
-//  ModelData.swift
+//  CategoryRow.swift
 //  Landmarks
 //
 //  88                                                     88              88                                     
@@ -13,47 +13,46 @@
 //                   d8'                                                                                          
 //                  d8'                 THE WORLD'S FIRST BYTE DNA ARCHITECT                                      
 //
-//  Created by @bytedriver on 4/6/23.
+//  Created by @bytedriver on 4/7/23.
 //  Copyright © 2023 bytedriver. All rights reserved.
 //
 
-import Foundation
-import Combine
+import SwiftUI
 
-final class ModelData: ObservableObject {
-    @Published var landmarks: [Landmark] = load("landmarkData.json")
-    var hikes: [Hike] = load("hikeData.json")
+struct CategoryRow: View {
+    var categoryName: String
+    var items: [Landmark]
     
-    var features: [Landmark] {
-        landmarks.filter { $0.isFeatured }
-    }
-    
-    var categories: [String: [Landmark]] {
-        Dictionary(
-            grouping: landmarks,
-            by: { $0.category.rawValue }
-        )
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(categoryName)
+                .font(.headline)
+                .padding(.leading, 15)
+                .padding(.top, 5)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: 0) {
+                    ForEach(items) { landmark in
+                        NavigationLink {
+                            LandmarkDetail(landmark: landmark)
+                        } label: {
+                            CategoryItem(landmark: landmark)
+                        }
+                    }
+                }
+            }
+            .frame(height: 185)
+        }
     }
 }
 
-func load<T: Decodable>(_ filename: String) -> T {
-    let data: Data
+struct CategoryRow_Previews: PreviewProvider {
+    static var landmarks = ModelData().landmarks
     
-    guard let file = Bundle.main.url(forResource: filename, withExtension: nil)
-    else {
-        fatalError("Couldn't find \(filename) in main bundle.")
-    }
-    
-    do {
-        data = try Data(contentsOf: file)
-    } catch {
-        fatalError("Couldn't load \(filename) from main bundle:\n\(error)")
-    }
-    
-    do {
-        let decoder = JSONDecoder()
-        return try decoder.decode(T.self, from: data)
-    } catch {
-        fatalError("Couldn't parse \(filename) as \(T.self):\n\(error)")
+    static var previews: some View {
+        CategoryRow(
+            categoryName: landmarks[0].category.rawValue,
+            items: Array(landmarks.prefix(4))
+        )
     }
 }

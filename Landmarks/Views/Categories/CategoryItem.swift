@@ -1,5 +1,5 @@
 //
-//  ModelData.swift
+//  CategoryItem.swift
 //  Landmarks
 //
 //  88                                                     88              88                                     
@@ -13,47 +13,32 @@
 //                   d8'                                                                                          
 //                  d8'                 THE WORLD'S FIRST BYTE DNA ARCHITECT                                      
 //
-//  Created by @bytedriver on 4/6/23.
+//  Created by @bytedriver on 4/7/23.
 //  Copyright © 2023 bytedriver. All rights reserved.
 //
 
-import Foundation
-import Combine
+import SwiftUI
 
-final class ModelData: ObservableObject {
-    @Published var landmarks: [Landmark] = load("landmarkData.json")
-    var hikes: [Hike] = load("hikeData.json")
+struct CategoryItem: View {
+    var landmark: Landmark
     
-    var features: [Landmark] {
-        landmarks.filter { $0.isFeatured }
-    }
-    
-    var categories: [String: [Landmark]] {
-        Dictionary(
-            grouping: landmarks,
-            by: { $0.category.rawValue }
-        )
+    var body: some View {
+        VStack(alignment: .leading) {
+            landmark.image
+                .renderingMode(.original)
+                .resizable()
+                .frame(width: 155, height: 155)
+                .cornerRadius(5)
+            Text(landmark.name)
+                .foregroundColor(.primary)
+                .font(.caption)
+        }
+        .padding(.leading, 15)
     }
 }
 
-func load<T: Decodable>(_ filename: String) -> T {
-    let data: Data
-    
-    guard let file = Bundle.main.url(forResource: filename, withExtension: nil)
-    else {
-        fatalError("Couldn't find \(filename) in main bundle.")
-    }
-    
-    do {
-        data = try Data(contentsOf: file)
-    } catch {
-        fatalError("Couldn't load \(filename) from main bundle:\n\(error)")
-    }
-    
-    do {
-        let decoder = JSONDecoder()
-        return try decoder.decode(T.self, from: data)
-    } catch {
-        fatalError("Couldn't parse \(filename) as \(T.self):\n\(error)")
+struct CategoryItem_Previews: PreviewProvider {
+    static var previews: some View {
+        CategoryItem(landmark: ModelData().landmarks[0])
     }
 }
