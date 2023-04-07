@@ -1,5 +1,5 @@
 //
-//  CategoryHome.swift
+//  PageView.swift
 //  Landmarks
 //
 //  88                                                     88              88                                     
@@ -19,42 +19,26 @@
 
 import SwiftUI
 
-struct CategoryHome: View {
-    @EnvironmentObject var modelData: ModelData
-    @State private var showingProfile = false
+struct PageView<Page: View>: View {
+    var pages: [Page]
+    @State private var currentPage = 0
     
     var body: some View {
-        NavigationView {
-            List {
-                PageView(pages: modelData.features.map { FeatureCard(landmark: $0) })
-                    .aspectRatio(3 / 2, contentMode: .fit)
-                    .listRowInsets(EdgeInsets())
-                
-                ForEach(modelData.categories.keys.sorted(), id: \.self) { key in
-                    CategoryRow(categoryName: key, items: modelData.categories[key]!)
-                }
-                .listRowInsets(EdgeInsets())
-            }
-            .listStyle(.inset)
-            .navigationTitle("Featured")
-            .toolbar {
-                Button {
-                    showingProfile.toggle()
-                } label: {
-                    Label("User Profile", systemImage: "person.crop.circle")
-                }
-            }
-            .sheet(isPresented: $showingProfile) {
-                ProfileHost()
-                    .environmentObject(modelData)
-            }
+        ZStack(alignment: .bottomTrailing) {
+            PageViewController(pages: pages, currentPage: $currentPage)
+            PageControl(numberOfPages: pages.count, currentPage: $currentPage)
+                .frame(width: CGFloat(pages.count * 18))
+                .padding(.trailing)
         }
+        
     }
 }
 
-struct CategoryHome_Previews: PreviewProvider {
+struct PageView_Previews: PreviewProvider {
     static var previews: some View {
-        CategoryHome()
-            .environmentObject(ModelData())
+        PageView(
+            pages: ModelData().features.map { FeatureCard(landmark: $0) }
+        )
+        .aspectRatio(3 / 2, contentMode: .fit)
     }
 }
