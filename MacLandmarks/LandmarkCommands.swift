@@ -1,5 +1,5 @@
 //
-//  LandmarkRow.swift
+//  LandmarkCommands.swift
 //  Landmarks
 //
 //  88                                                     88              88                                     
@@ -13,49 +13,35 @@
 //                   d8'                                                                                          
 //                  d8'                 THE WORLD'S FIRST BYTE DNA ARCHITECT                                      
 //
-//  Created by @bytedriver on 4/6/23.
+//  Created by @bytedriver on 4/13/23.
 //  Copyright © 2023 bytedriver. All rights reserved.
 //
 
 import SwiftUI
 
-struct LandmarkRow: View {
-    var landmark: Landmark
+struct LandmarkCommands: Commands {
+    @FocusedBinding(\.selectedLandmark) var selectedLandmark
     
-    var body: some View {
-        HStack {
-            landmark.image
-                .resizable()
-                .frame(width: 50, height: 50)
-                .cornerRadius(5)
-            VStack(alignment: .leading) {
-                Text(landmark.name)
-                    .bold()
-                Text(landmark.park)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+    var body: some Commands {
+        SidebarCommands()
+        
+        CommandMenu("Landmark") {
+            Button("\(selectedLandmark?.isFavorite == true ? "Remove" : "Mark") as Favorite") {
+                selectedLandmark?.isFavorite.toggle()
             }
-            
-            Spacer()
-            
-            if landmark.isFavorite {
-                Image(systemName: "star.fill")
-                    .imageScale(.medium)
-                    .foregroundColor(.yellow)
-            }
+            .keyboardShortcut("f", modifiers: [.shift, .option])
+            .disabled(selectedLandmark == nil)
         }
-        .padding(.vertical, 4)
     }
 }
 
-struct LandmarkRow_Previews: PreviewProvider {
-    static var landmarks = ModelData().landmarks
-    
-    static var previews: some View {
-        Group {
-            LandmarkRow(landmark: landmarks[0])
-            LandmarkRow(landmark: landmarks[1])
-        }
-        .previewLayout(.fixed(width: 300, height: 70))
+private struct SelectedLandmarkKey: FocusedValueKey {
+    typealias Value = Binding<Landmark>
+}
+
+extension FocusedValues {
+    var selectedLandmark: Binding<Landmark>? {
+        get { self[SelectedLandmarkKey.self] }
+        set { self[SelectedLandmarkKey.self] = newValue }
     }
 }

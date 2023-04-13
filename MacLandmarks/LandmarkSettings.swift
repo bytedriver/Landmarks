@@ -1,5 +1,5 @@
 //
-//  LandmarkRow.swift
+//  LandmarkSettings.swift
 //  Landmarks
 //
 //  88                                                     88              88                                     
@@ -13,49 +13,33 @@
 //                   d8'                                                                                          
 //                  d8'                 THE WORLD'S FIRST BYTE DNA ARCHITECT                                      
 //
-//  Created by @bytedriver on 4/6/23.
+//  Created by @bytedriver on 4/13/23.
 //  Copyright © 2023 bytedriver. All rights reserved.
 //
 
 import SwiftUI
 
-struct LandmarkRow: View {
-    var landmark: Landmark
+struct LandmarkSettings: View {
+    @AppStorage("MapView.zoom")
+    private var zoom: MapView.Zoom = .medium
     
     var body: some View {
-        HStack {
-            landmark.image
-                .resizable()
-                .frame(width: 50, height: 50)
-                .cornerRadius(5)
-            VStack(alignment: .leading) {
-                Text(landmark.name)
-                    .bold()
-                Text(landmark.park)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+        Form {
+            Picker("Map Zoom:", selection: $zoom) {
+                ForEach(MapView.Zoom.allCases) { level in
+                    Text(level.rawValue)
+                }
             }
-            
-            Spacer()
-            
-            if landmark.isFavorite {
-                Image(systemName: "star.fill")
-                    .imageScale(.medium)
-                    .foregroundColor(.yellow)
-            }
+            .pickerStyle(.inline)
         }
-        .padding(.vertical, 4)
+        .frame(width: 300)
+        .navigationTitle("Landmark Settings")
+        .padding(100)
     }
 }
 
-struct LandmarkRow_Previews: PreviewProvider {
-    static var landmarks = ModelData().landmarks
-    
+struct LandmarkSettings_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            LandmarkRow(landmark: landmarks[0])
-            LandmarkRow(landmark: landmarks[1])
-        }
-        .previewLayout(.fixed(width: 300, height: 70))
+        LandmarkSettings()
     }
 }

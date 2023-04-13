@@ -1,6 +1,6 @@
 //
-//  LandmarkRow.swift
-//  Landmarks
+//  MacLandmarksTests.swift
+//  MacLandmarksTests
 //
 //  88                                                     88              88                                     
 //  88                          ,d                         88              ""                                     
@@ -13,49 +13,36 @@
 //                   d8'                                                                                          
 //                  d8'                 THE WORLD'S FIRST BYTE DNA ARCHITECT                                      
 //
-//  Created by @bytedriver on 4/6/23.
+//  Created by @bytedriver on 4/12/23.
 //  Copyright © 2023 bytedriver. All rights reserved.
 //
 
-import SwiftUI
+import XCTest
+@testable import MacLandmarks
 
-struct LandmarkRow: View {
-    var landmark: Landmark
-    
-    var body: some View {
-        HStack {
-            landmark.image
-                .resizable()
-                .frame(width: 50, height: 50)
-                .cornerRadius(5)
-            VStack(alignment: .leading) {
-                Text(landmark.name)
-                    .bold()
-                Text(landmark.park)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-            
-            if landmark.isFavorite {
-                Image(systemName: "star.fill")
-                    .imageScale(.medium)
-                    .foregroundColor(.yellow)
-            }
-        }
-        .padding(.vertical, 4)
-    }
-}
+final class MacLandmarksTests: XCTestCase {
 
-struct LandmarkRow_Previews: PreviewProvider {
-    static var landmarks = ModelData().landmarks
-    
-    static var previews: some View {
-        Group {
-            LandmarkRow(landmark: landmarks[0])
-            LandmarkRow(landmark: landmarks[1])
-        }
-        .previewLayout(.fixed(width: 300, height: 70))
+    override func setUpWithError() throws {
+        // Put setup code here. This method is called before the invocation of each test method in the class.
     }
+
+    override func tearDownWithError() throws {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
+
+    func testExample() throws {
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        // Any test you write for XCTest can be annotated as throws and async.
+        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
+        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    }
+
+    func testPerformanceExample() throws {
+        // This is an example of a performance test case.
+        self.measure {
+            // Put the code you want to measure the time of here.
+        }
+    }
+
 }

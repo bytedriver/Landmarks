@@ -1,6 +1,6 @@
 //
-//  LandmarkRow.swift
-//  Landmarks
+//  ContentView.swift
+//  MacLandmarks
 //
 //  88                                                     88              88                                     
 //  88                          ,d                         88              ""                                     
@@ -13,49 +13,22 @@
 //                   d8'                                                                                          
 //                  d8'                 THE WORLD'S FIRST BYTE DNA ARCHITECT                                      
 //
-//  Created by @bytedriver on 4/6/23.
+//  Created by @bytedriver on 4/12/23.
 //  Copyright © 2023 bytedriver. All rights reserved.
 //
 
 import SwiftUI
 
-struct LandmarkRow: View {
-    var landmark: Landmark
-    
+struct ContentView: View {
     var body: some View {
-        HStack {
-            landmark.image
-                .resizable()
-                .frame(width: 50, height: 50)
-                .cornerRadius(5)
-            VStack(alignment: .leading) {
-                Text(landmark.name)
-                    .bold()
-                Text(landmark.park)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-            
-            if landmark.isFavorite {
-                Image(systemName: "star.fill")
-                    .imageScale(.medium)
-                    .foregroundColor(.yellow)
-            }
-        }
-        .padding(.vertical, 4)
+        LandmarkList()
+            .frame(minWidth: 700, minHeight: 300)
     }
 }
 
-struct LandmarkRow_Previews: PreviewProvider {
-    static var landmarks = ModelData().landmarks
-    
+struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            LandmarkRow(landmark: landmarks[0])
-            LandmarkRow(landmark: landmarks[1])
-        }
-        .previewLayout(.fixed(width: 300, height: 70))
+        ContentView()
+            .environmentObject(ModelData())
     }
 }
