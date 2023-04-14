@@ -1,7 +1,7 @@
 # Landmarks
 SwiftUI is a modern way to declare user interfaces for any Apple platform.
 <br>
-This tutorial guides you through building Landmarks — an app for discovering and sharing the places you love.
+This tutorial guides you through building _Landmarks_ — an app for discovering and sharing the places you love.
 
 (Used Swift 5.8, Xcode 14.3)
 
